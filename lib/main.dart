@@ -18,7 +18,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List _toDoList = [];
+  List _toDoList = [
+    {"title": "Criar Apps Incriveis", "done": true},
+    {"title": "Aprender Dart", "done": false}
+  ];
+
+  final _toDoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +44,11 @@ class _HomeState extends State<Home> {
                     decoration: InputDecoration(
                         labelText: "Nova tarefa",
                         labelStyle: TextStyle(color: COR_PRIMARIA)),
+                    controller: _toDoController,
                   )),
                   RaisedButton(
-                    child: Text("add"),
-                    onPressed: () {},
+                    child: Text("ADD"),
+                    onPressed: _addToDo,
                     color: COR_PRIMARIA,
                     textColor: Colors.white,
                   ),
@@ -50,8 +56,44 @@ class _HomeState extends State<Home> {
                 ],
               ),
             ),
+            Divider(),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  final obj = _toDoList[index];
+
+                  return CheckboxListTile(
+                    title: Text(obj["title"]),
+                    value: obj["done"],
+                    secondary: CircleAvatar(
+                      child: Icon(obj["done"] ? Icons.check : Icons.warning),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        obj["done"] = value;
+                      });
+                    },
+                  );
+                },
+                itemCount: _toDoList.length,
+              ),
+            )
           ],
         ));
+  }
+
+  void _addToDo() {
+    //Novo obj/map JSON
+    Map<String, dynamic> newToDo = Map();
+    newToDo["title"] = _toDoController.text;
+    newToDo["done"] = false;
+
+    //limpa o campo input
+    _toDoController.text = "";
+
+    setState(() {
+      _toDoList.add(newToDo);
+    });
   }
 
   Future<File> _getFile() async {
