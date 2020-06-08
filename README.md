@@ -1,6 +1,6 @@
-# listatarefas
+# Lista de Tarefas
 
-A new Flutter application.
+Permite adicionar, concluir e remover. Dados salvo em um arquivo local do dispositivo. Desenvolvido em flutter.
 
 ## Getting Started
 
