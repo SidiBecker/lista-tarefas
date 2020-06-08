@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-const COR_PRIMARIA = Colors.teal;
+const COR_PRIMARIA = Colors.deepOrangeAccent;
 
 void main() {
   runApp(MaterialApp(
@@ -223,7 +223,9 @@ class _HomeState extends State<Home> {
 
   void _deleteAll() {
     void callback() async {
-      _toDoList = [];
+      setState(() {
+        _toDoList = [];
+      });
       _saveData();
     }
 
