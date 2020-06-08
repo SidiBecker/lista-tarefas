@@ -1,6 +1,6 @@
 # Lista de Tarefas
 
-Lista de tarefas. Permite adicionar, concluir e remover. Dados salvo em um arquivo local do dispositivo. Desenvolvido em flutter.
+Permite adicionar, concluir e remover. Dados salvo em um arquivo local do dispositivo. Desenvolvido em flutter.
 
 ## Getting Started
 
