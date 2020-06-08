@@ -33,6 +33,8 @@ class _HomeState extends State<Home> {
   Map<String, dynamic> _lastRemoved;
   int _lastRemovedPos;
 
+  bool _hasValue = false;
+
   @override
   void initState() {
     super.initState();
@@ -51,19 +53,23 @@ class _HomeState extends State<Home> {
         backgroundColor: COR_PRIMARIA,
         centerTitle: false,
         actions: <Widget>[
-          FlatButton(
-            child: Icon(
-              Icons.delete_forever,
-              color: Colors.white,
-            ),
-            onPressed: _deleteAll,
+          Visibility(
+            child: buildBarButton(
+                Icon(
+                  Icons.delete_forever,
+                  color: Colors.white,
+                ),
+                _deleteAll),
+            visible: _toDoList.isNotEmpty,
           ),
-          FlatButton(
-            child: Icon(
-              Icons.done_all,
-              color: Colors.white,
-            ),
-            onPressed: _doneAll,
+          Visibility(
+            child: buildBarButton(
+                Icon(
+                  Icons.done_all,
+                  color: Colors.white,
+                ),
+                _doneAll),
+            visible: _toDoList.isNotEmpty,
           ),
         ],
       ),
@@ -78,12 +84,24 @@ class _HomeState extends State<Home> {
                     labelText: "Nova tarefa",
                     labelStyle: TextStyle(color: COR_PRIMARIA)),
                 controller: _toDoController,
+                onChanged: (value) {
+                  setState(() {
+                    _hasValue = value.isNotEmpty;
+                  });
+                },
               )),
-              RaisedButton(
-                child: Text("ADD"),
-                onPressed: _addToDo,
-                color: COR_PRIMARIA,
-                textColor: Colors.white,
+              ButtonTheme(
+                minWidth: 40.0,
+                //height: 100.0,
+                child: RaisedButton(
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+                  onPressed: _hasValue ? _addToDo : null,
+                  color: COR_PRIMARIA,
+                  disabledColor: Colors.grey.withOpacity(0.2),
+                ),
               ),
             ],
           ),
@@ -156,13 +174,16 @@ class _HomeState extends State<Home> {
         _saveData();
 
         final snack = SnackBar(
-          content: Text("Tarefa \"${_lastRemoved["title"]}\" removida!"),
+          content: Text("A tarefa \"${_lastRemoved["title"]}\" foi removida!"),
           action: SnackBarAction(
             label: "Desfazer",
+            textColor: COR_PRIMARIA,
             onPressed: () {
               setState(() {
                 _toDoList.insert(_lastRemovedPos, _lastRemoved);
               });
+
+              _saveData();
             },
           ),
           duration: Duration(milliseconds: 2000),
@@ -171,6 +192,13 @@ class _HomeState extends State<Home> {
         Scaffold.of(context).removeCurrentSnackBar();
         Scaffold.of(context).showSnackBar(snack);
       },
+    );
+  }
+
+  Widget buildBarButton(Icon icon, Function function) {
+    return ButtonTheme(
+      minWidth: 40.0,
+      child: FlatButton(child: icon, onPressed: function),
     );
   }
 
@@ -215,6 +243,7 @@ class _HomeState extends State<Home> {
 
       setState(() {
         _toDoList.add(newToDo);
+        _hasValue = false;
       });
 
       _saveData();
